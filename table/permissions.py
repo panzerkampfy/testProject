@@ -1,6 +1,6 @@
 from rest_framework.permissions import BasePermission
 
-from table.models import PermissionOnBoard, ColumnBoard, TaskColumn
+from table.models import PermissionOnBoard
 
 
 # permission_types = (
@@ -10,25 +10,38 @@ from table.models import PermissionOnBoard, ColumnBoard, TaskColumn
 #     (4, 'Admin'),
 # )
 
-# class IsOwner(BasePermission):
-#     def has_object_permission(self, request, view, obj: PermissionOnBoard):
-#         return obj.permission == 1
 
 class IsOwner(BasePermission):
-    def has_permission(self, request, view):
-        return PermissionOnBoard.objects.filter(user=request.user.id, permission=1).exists()
+    def has_object_permission(self, request, view, obj: PermissionOnBoard):
+        if obj is None:
+            print("object not found")
+            return False
+        print("IsOwner, res = " + str(obj.permission == 1))
+        return obj.permission == 1
 
 
 class IsMember(BasePermission):
-    def has_permission(self, request, view):
-        return PermissionOnBoard.objects.filter(user=request.user.id, permission=2).exists()
+    def has_object_permission(self, request, view, obj: PermissionOnBoard):
+        if obj is None:
+            print("object not found")
+            return False
+        print("IsMember, res = " + str(obj.permission == 2))
+        return obj.permission == 2
 
 
 class IsVisitor(BasePermission):
-    def has_permission(self, request, view):
-        return PermissionOnBoard.objects.filter(user=request.user.id, permission=3).exists()
+    def has_object_permission(self, request, view, obj: PermissionOnBoard):
+        if obj is None:
+            print("object not found")
+            return False
+        print("IsVisitor, res = " + str(obj.permission == 3))
+        return obj.permission == 3
 
 
 class IsAdmin(BasePermission):
-    def has_permission(self, request, view):
-        return PermissionOnBoard.objects.filter(user=request.user.id, permission=4).exists()
+    def has_object_permission(self, request, view, obj: PermissionOnBoard):
+        if obj is None:
+            print("object not found")
+            return False
+        print("IsAdmin, res = " + str(obj.permission == 4))
+        return obj.permission == 4
