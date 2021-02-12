@@ -47,20 +47,24 @@ class BoardSerializer(serializers.ModelSerializer):
 class TaskListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['id', 'text']
+        fields = ['id', 'text', 'date', 'fact', 'weather']
         read_only_fields = ('id',)
 
     text = serializers.CharField(min_length=1, max_length=255)
+    fact = serializers.CharField(max_length=511)
+    weather = serializers.FloatField()
 
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['id', 'text', 'column']
+        fields = ['id', 'text', 'column', 'fact', 'weather']
         read_only_fields = ('id',)
 
     text = serializers.CharField(min_length=1, max_length=255)
     column = serializers.PrimaryKeyRelatedField(queryset=Column.objects.all(), required=False)
+    fact = serializers.CharField(max_length=511)
+    weather = serializers.FloatField()
 
     def create(self, validated_data):
         return self.Meta.model.objects.create(**validated_data)

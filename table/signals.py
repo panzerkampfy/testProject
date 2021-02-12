@@ -11,6 +11,7 @@ def delete_tasks(sender, instance: Column, **kwargs):
         task = Task.objects.get(id=obj.task.id)
         task.delete()
 
+
 @receiver(post_delete, sender=Board)
 def delete_columns(sender, instance: Board, **kwargs):
     objs = Column.objects.filter(board=instance)

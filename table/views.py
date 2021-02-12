@@ -8,6 +8,9 @@ from table.models import Task, Column, Board, PermissionOnBoard
 from table.selializers import TaskSerializer, TaskListSerializer, BoardSerializer, PermissionSerializer, \
     ColumnSerializer, ColumnListSerializer
 
+from .views_helpers import get_fact_today as fact
+from .views_helpers import get_weather_today as weather
+
 
 class BaseViewSet(viewsets.ModelViewSet):
     serializer_map: dict = None
@@ -45,7 +48,6 @@ class PermissionViewSet(BaseViewSet):
             board=data.get('board'),
             user=data.get('user')
         ).first()
-        print(obj)
         if obj is not None:
             serializer = self.get_serializer(obj, data=data)
         else:
@@ -55,20 +57,18 @@ class PermissionViewSet(BaseViewSet):
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
 
-def task_obj_permission(id, pk):
+def task_obj_permission(id, pk) -> PermissionOnBoard:
     column_id = Task.objects.get(id=pk).column.id
     return column_obj_permission(id, column_id)
 
 
-def column_obj_permission(id, pk):
+def column_obj_permission(id, pk) -> PermissionOnBoard:
     board_id = Column.objects.get(id=pk).board.id
     return board_obj_permission(id, board_id)
 
 
-def board_obj_permission(id, pk):
+def board_obj_permission(id, pk) -> PermissionOnBoard:
     obj = PermissionOnBoard.objects.filter(user_id=id, board_id=pk).first()
-    print("check board permission")
-    print(obj)
     return obj
 
 
@@ -120,7 +120,10 @@ class TaskViewSet(BaseViewSet):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         self.check_object_permissions(request, column_obj_permission(request.user.id, request.data.get('column')))
-        serializer = self.get_serializer(data=self.request.data)
+        data = self.request.data
+        data['fact'] = fact()
+        data['weather'] = weather()
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)

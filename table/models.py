@@ -7,6 +7,9 @@ User = get_user_model()
 class Task(models.Model):
     text = models.CharField(max_length=255)
     column = models.ForeignKey("Column", on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True, null=True)
+    fact = models.CharField(max_length=511, null=True)
+    weather = models.FloatField(null=True)
 
 
 class Column(models.Model):

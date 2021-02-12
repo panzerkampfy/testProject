@@ -1,5 +1,4 @@
 import pytest
-
 from table.models import User, PermissionOnBoard
 
 pytestmark = pytest.mark.django_db
@@ -11,7 +10,7 @@ class TestRegistration:
         self.api_client = api_client
 
     def test_reg(self, user_data):
-        response = self.api_client.post('/registration/', data=user_data)
+        response = self.api_client.post('/api/v1/registration/', data=user_data)
         assert response.status_code == 201
 
 
@@ -23,7 +22,7 @@ class TestBoardView:
         self.api_client.force_authenticate(user)
 
     def create_board(self, data):
-        response = self.api_client.post('/api/v1/boards/add/', data=data)
+        response = self.api_client.post('/api/v1/boards/', data=data)
         return response
 
     def test_create_board(self, new_board_data):
@@ -64,8 +63,7 @@ class TestColumnView:
         self.api_client.force_authenticate(user)
 
     def create_column(self, data):
-        path = '/api/v1/columns/column_create/'
-        print(path)
+        path = '/api/v1/column/'
         response = self.api_client.post(path, data=data, format='json')
         return response
 
@@ -123,8 +121,7 @@ class TestTaskView:
         self.api_client.force_authenticate(user)
 
     def create_task(self, data):
-        path = '/api/v1/tasks/'
-        print(path)
+        path = '/api/v1/task/'
         response = self.api_client.post(path, data=data, format='json')
         return response
 
@@ -175,7 +172,6 @@ class TestTaskView:
 
         column_id = str(response.data['id'])
         path = '/api/v1/tasks/' + task_id + '/'
-        print(path)
         update_task_data = {"column": column_id}
         response = self.api_client.put(path, data=update_task_data, format='json')
         assert response.status_code == 202
@@ -221,10 +217,10 @@ class TestPermissions:
         self.api_client.force_authenticate(self.user2)
         user2_id = self.user2.id
         data = {"user": user2_id, "board": board_id, "permission": 2}
-        path = '/api/v1/permissions/permission_update/'
-        response = self.api_client.patch(path, data=data)
+        path = '/api/v1/permissions/'
+        response = self.api_client.put(path, data=data)
         assert response.status_code == 403
 
         self.api_client.force_authenticate(self.user1)
-        response = self.api_client.patch(path, data=data)
+        response = self.api_client.put(path, data=data)
         assert response.status_code == 201
