@@ -10,7 +10,7 @@ def api_client() -> APIClient:
 @pytest.fixture
 def user_data() -> {}:
     return {"username": "tests", "email": "testmail@mail.com",
-            "password1": "any_strong_pass1", "password2": "any_strong_pass1"}
+            "password": "any_strong_pass1"}
 
 
 @pytest.fixture

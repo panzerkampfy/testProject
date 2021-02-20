@@ -15,7 +15,7 @@ urlpatterns = [
     path('boards/<int:pk>/', BoardViewSet.as_view({'put': 'update',
                                                    'delete': 'destroy'}), name='boards_actions'),
     path('boards/', BoardViewSet.as_view({'get': 'list',
-                                          'post': 'add'}, name='permissions_actions')),
+                                          'post': 'create_board'}, name='permissions_actions')),
 
     path('permissions/', PermissionViewSet.as_view({'put': 'permission_update'}), name='permissions_actions'),
 ]

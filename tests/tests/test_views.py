@@ -4,21 +4,11 @@ from table.models import User, PermissionOnBoard
 pytestmark = pytest.mark.django_db
 
 
-class TestRegistration:
-    @pytest.fixture(autouse=True)
-    def setup(self, api_client):
-        self.api_client = api_client
-
-    def test_reg(self, user_data):
-        response = self.api_client.post('/api/v1/registration/', data=user_data)
-        assert response.status_code == 201
-
-
 class TestBoardView:
     @pytest.fixture(autouse=True)
     def setup(self, api_client):
         self.api_client = api_client
-        user = User.objects.create_user(username='username', password='password', email="jk@mail.com")
+        user = User.objects.create(username='username', password='password', email="jk@mail.com")
         self.api_client.force_authenticate(user)
 
     def create_board(self, data):
@@ -59,7 +49,7 @@ class TestColumnView:
     @pytest.fixture(autouse=True)
     def setup(self, api_client):
         self.api_client = api_client
-        user = User.objects.create_user(username='username', password='password', email="jk@mail.com")
+        user = User.objects.create(username='username', password='password', email="jk@mail.com")
         self.api_client.force_authenticate(user)
 
     def create_column(self, data):
@@ -117,7 +107,7 @@ class TestTaskView:
     @pytest.fixture(autouse=True)
     def setup(self, api_client):
         self.api_client = api_client
-        user = User.objects.create_user(username='username', password='password', email="jk@mail.com")
+        user = User.objects.create(username='username', password='password', email="jk@mail.com")
         self.api_client.force_authenticate(user)
 
     def create_task(self, data):
@@ -200,10 +190,10 @@ class TestPermissions:
     @pytest.fixture(autouse=True)
     def setup(self, api_client):
         self.api_client = api_client
-        self.user1 = User.objects.create_user(username='username1', password='password1', email="j1k@mail.com")
+        self.user1 = User.objects.create(username='username1', password='password1', email="j1k@mail.com")
         self.api_client.force_authenticate(self.user1)
 
-        self.user2 = User.objects.create_user(username='username2', password='password2', email="j2k@mail.com")
+        self.user2 = User.objects.create(username='username2', password='password2', email="j2k@mail.com")
 
     def test_create_permission(self, new_board_data):
         response = TestBoardView.create_board(self, new_board_data)

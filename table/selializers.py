@@ -18,6 +18,7 @@ class PermissionSerializer(serializers.ModelSerializer):
     permission = serializers.ChoiceField(choices=Meta.model.permission_types)
 
     def create(self, validated_data):
+
         return self.Meta.model.objects.create(**validated_data)
 
     def update(self, instance: PermissionOnBoard, validated_data):
@@ -63,8 +64,8 @@ class TaskSerializer(serializers.ModelSerializer):
 
     text = serializers.CharField(min_length=1, max_length=255)
     column = serializers.PrimaryKeyRelatedField(queryset=Column.objects.all(), required=False)
-    fact = serializers.CharField(max_length=511)
-    weather = serializers.FloatField()
+    fact = serializers.CharField(max_length=511, required=False)
+    weather = serializers.FloatField(required=False, allow_null=True)
 
     def create(self, validated_data):
         return self.Meta.model.objects.create(**validated_data)
