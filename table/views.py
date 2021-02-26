@@ -7,7 +7,6 @@ from table import permissions as table_permissions
 from table.models import Task, Column, Board, PermissionOnBoard
 from table.selializers import TaskSerializer, TaskListSerializer, BoardSerializer, PermissionSerializer, \
     ColumnSerializer, ColumnListSerializer
-
 from .views_helpers import get_fact_today as fact
 from .views_helpers import get_weather_today as weather
 

@@ -18,7 +18,6 @@ class PermissionSerializer(serializers.ModelSerializer):
     permission = serializers.ChoiceField(choices=Meta.model.permission_types)
 
     def create(self, validated_data):
-
         return self.Meta.model.objects.create(**validated_data)
 
     def update(self, instance: PermissionOnBoard, validated_data):

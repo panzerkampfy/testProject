@@ -32,4 +32,3 @@ class PermissionOnBoard(models.Model):
         (4, 'Admin'),
     )
     permission = models.IntegerField(choices=permission_types)
-

@@ -1,6 +1,7 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+
 from dj_rest_auth.tests import settings
 from dotenv import load_dotenv
 
@@ -28,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
+    'drf_yasg',
 
     'table.apps.TableConfig',
     'users.apps.UsersConfig',

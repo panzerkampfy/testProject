@@ -1,8 +1,8 @@
 version: '3'
 
 volumes:
-  db_data: {}
-  django_data: {}
+  db_data: { }
+  django_data: { }
 
 services:
   django:

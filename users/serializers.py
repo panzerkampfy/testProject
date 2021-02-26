@@ -1,27 +1,29 @@
 from asyncio import exceptions
 from datetime import datetime
 
-from rest_framework import serializers
 from dj_rest_auth.serializers import UserDetailsSerializer, LoginSerializer
+from rest_framework import serializers
 
 from users.models import User
 
 
-class RegisterSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.Serializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'city', 'first_name', 'last_name', 'date_joined']
+        read_only_fields = ('date_joined',)
 
     username = serializers.CharField(
         max_length=150,
         required=True
     )
-    password = serializers.CharField(required=True)
-    email = serializers.EmailField(required=False)
+    password1 = serializers.CharField(required=True, write_only=True)
+    password2 = serializers.CharField(required=True, write_only=True)
+    email = serializers.EmailField(required=True)
     city = serializers.CharField(required=False)
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
-    date_joined = serializers.DateTimeField(default=datetime.now)
+    date_joined = serializers.DateTimeField(default=datetime.now, read_only=True)
 
     def validate_username(self, username):
         uniqueness = User.objects.filter(username=username).exists()
@@ -30,8 +32,22 @@ class RegisterSerializer(serializers.ModelSerializer):
                 "A user is already registered with this username.")
         return username
 
+    def validate_email(self, email):
+        uniqueness = User.objects.filter(email=email).exists()
+        if email and uniqueness:
+            raise serializers.ValidationError(
+                "A user is already registered with this e-mail address.")
+        return email
+
+    def validate_password(self, data):
+        if data['password1'] != data['password2']:
+            raise serializers.ValidationError(
+                "The two password fields didn't match.")
+        return data
+
     def create(self, validated_data):
-        password = validated_data.pop("password")
+        password = validated_data.pop("password1")
+        validated_data.pop("password2")
         user = self.Meta.model.objects.create(**validated_data)
         user.set_password(password)
         user.save()

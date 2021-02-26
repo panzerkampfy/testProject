@@ -1,15 +1,13 @@
-from datetime import datetime
-
 from dj_rest_auth.app_settings import create_token
-from dj_rest_auth.utils import jwt_encode
-from django.conf import settings
-from rest_framework.response import Response
-from rest_framework import viewsets, status
-from .models import User
-from .serializers import RegisterSerializer, CustomLoginSerializer
-from dj_rest_auth.models import TokenModel
-from dj_rest_auth.views import LoginView as login
 from dj_rest_auth.serializers import TokenSerializer, JWTSerializerWithExpiration, JWTSerializer
+from dj_rest_auth.utils import jwt_encode
+from dj_rest_auth.views import LoginView as login
+from django.conf import settings
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+
+from .models import User
+from .serializers import RegisterSerializer
 
 
 class RegistrationViewSet(viewsets.ModelViewSet):
