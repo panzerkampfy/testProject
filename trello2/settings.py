@@ -37,12 +37,16 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-    ),
+        # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # )
 }
 
 REST_USE_JWT = True
-JWT_AUTH_COOKIE = 'jwt-auth'
+# JWT_AUTH_COOKIE = 'jwt-auth'
 AUTH_USER_MODEL = 'users.User'
 
 REST_AUTH_SERIALIZERS = {

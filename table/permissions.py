@@ -12,28 +12,28 @@ from table.models import PermissionOnBoard
 
 
 class IsOwner(BasePermission):
-    def has_object_permission(self, request, view, obj: PermissionOnBoard):
+    def has_object_permission(self, request, view, obj: PermissionOnBoard) -> bool:
         if obj is None:
             return False
         return obj.permission == 1
 
 
 class IsMember(BasePermission):
-    def has_object_permission(self, request, view, obj: PermissionOnBoard):
+    def has_object_permission(self, request, view, obj: PermissionOnBoard) -> bool:
         if obj is None:
             return False
         return obj.permission == 2
 
 
 class IsVisitor(BasePermission):
-    def has_object_permission(self, request, view, obj: PermissionOnBoard):
+    def has_object_permission(self, request, view, obj: PermissionOnBoard) -> bool:
         if obj is None:
             return False
         return obj.permission == 3
 
 
 class IsAdmin(BasePermission):
-    def has_object_permission(self, request, view, obj: PermissionOnBoard):
+    def has_object_permission(self, request, view, obj: PermissionOnBoard) -> bool:
         if obj is None:
             return False
         return obj.permission == 4
