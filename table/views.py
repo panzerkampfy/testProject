@@ -7,7 +7,6 @@ from table import permissions as table_permissions
 from table.models import Task, Column, Board, PermissionOnBoard
 from table.selializers import TaskSerializer, TaskListSerializer, BoardSerializer, PermissionSerializer, \
     ColumnSerializer, ColumnListSerializer
-
 from .views_helpers import get_fact_today as fact
 from .views_helpers import get_weather_today as weather
 
@@ -122,7 +121,7 @@ class TaskViewSet(BaseViewSet):
         self.check_object_permissions(request, column_obj_permission(request.user.id, request.data.get('column')))
         data = self.request.data
         data['fact'] = fact()
-        data['weather'] = weather()
+        data['weather'] = weather(request.user.id)
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -235,7 +234,7 @@ class BoardViewSet(BaseViewSet):
     queryset = Board.objects.all()
     serializer_map = {
         'list': BoardSerializer,
-        'add': BoardSerializer,
+        'create_board': BoardSerializer,
         'update': BoardSerializer
     }
 
@@ -250,7 +249,7 @@ class BoardViewSet(BaseViewSet):
                    (table_permissions.IsOwner |
                     table_permissions.IsAdmin)
                    ),
-        'add': (base_permissions.IsAuthenticated,),
+        'create_board': (base_permissions.IsAuthenticated,),
         'destroy': (base_permissions.IsAuthenticated,
                     (table_permissions.IsOwner |
                      table_permissions.IsAdmin)
@@ -263,7 +262,7 @@ class BoardViewSet(BaseViewSet):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['POST'])
-    def add(self, request):
+    def create_board(self, request):
         data = request.data
         board_serializer = self.get_serializer(data=data)
         board_serializer.is_valid(raise_exception=True)

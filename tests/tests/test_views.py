@@ -1,29 +1,23 @@
 import pytest
-from table.models import User, PermissionOnBoard
+
+from table.models import PermissionOnBoard
+from tests.factories.factories import *
 
 pytestmark = pytest.mark.django_db
 
 
-class TestRegistration:
+class BaseTestClass:
     @pytest.fixture(autouse=True)
     def setup(self, api_client):
         self.api_client = api_client
+        self.user1 = UserFactory(username='username1', password='password1', email="j1k@mail.com")
+        self.api_client.force_authenticate(self.user1)
+        self.user2 = UserFactory(username='username2', password='password2', email="j2k@mail.com")
 
-    def test_reg(self, user_data):
-        response = self.api_client.post('/api/v1/registration/', data=user_data)
-        assert response.status_code == 201
 
-
-class TestBoardView:
-    @pytest.fixture(autouse=True)
-    def setup(self, api_client):
-        self.api_client = api_client
-        user = User.objects.create_user(username='username', password='password', email="jk@mail.com")
-        self.api_client.force_authenticate(user)
-
+class TestBoardView(BaseTestClass):
     def create_board(self, data):
-        response = self.api_client.post('/api/v1/boards/', data=data)
-        return response
+        return self.api_client.post('/api/v1/boards/', data=data)
 
     def test_create_board(self, new_board_data):
         response = self.create_board(data=new_board_data)
@@ -55,17 +49,9 @@ class TestBoardView:
         assert response.status_code == 204
 
 
-class TestColumnView:
-    @pytest.fixture(autouse=True)
-    def setup(self, api_client):
-        self.api_client = api_client
-        user = User.objects.create_user(username='username', password='password', email="jk@mail.com")
-        self.api_client.force_authenticate(user)
-
+class TestColumnView(BaseTestClass):
     def create_column(self, data):
-        path = '/api/v1/column/'
-        response = self.api_client.post(path, data=data, format='json')
-        return response
+        return self.api_client.post('/api/v1/column/', data=data, format='json')
 
     def test_create_column(self, new_board_data):
         response = TestBoardView.create_board(self=self, data=new_board_data)
@@ -97,7 +83,6 @@ class TestColumnView:
         response = self.api_client.put(path, data=update_column_data_not_valid)
         assert response.status_code == 400
 
-    #
     def test_delete_column(self, new_board_data):
         response = TestBoardView.create_board(self=self, data=new_board_data)
         assert response.status_code == 201
@@ -113,17 +98,9 @@ class TestColumnView:
         assert response.status_code == 204
 
 
-class TestTaskView:
-    @pytest.fixture(autouse=True)
-    def setup(self, api_client):
-        self.api_client = api_client
-        user = User.objects.create_user(username='username', password='password', email="jk@mail.com")
-        self.api_client.force_authenticate(user)
-
+class TestTaskView(BaseTestClass):
     def create_task(self, data):
-        path = '/api/v1/task/'
-        response = self.api_client.post(path, data=data, format='json')
-        return response
+        return self.api_client.post('/api/v1/task/', data=data, format='json')
 
     def test_create_task(self, new_board_data):
         response = TestBoardView.create_board(self=self, data=new_board_data)
@@ -196,15 +173,7 @@ class TestTaskView:
         assert response.status_code == 204
 
 
-class TestPermissions:
-    @pytest.fixture(autouse=True)
-    def setup(self, api_client):
-        self.api_client = api_client
-        self.user1 = User.objects.create_user(username='username1', password='password1', email="j1k@mail.com")
-        self.api_client.force_authenticate(self.user1)
-
-        self.user2 = User.objects.create_user(username='username2', password='password2', email="j2k@mail.com")
-
+class TestPermissions(BaseTestClass):
     def test_create_permission(self, new_board_data):
         response = TestBoardView.create_board(self, new_board_data)
         assert response.status_code == 201

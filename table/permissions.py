@@ -1,5 +1,7 @@
 from rest_framework.permissions import BasePermission
+
 from table.models import PermissionOnBoard
+
 
 # permission_types = (
 #     (1, 'Owner'),

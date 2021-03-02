@@ -1,8 +1,10 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+
 from dj_rest_auth.tests import settings
 from dotenv import load_dotenv
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,6 +16,8 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(" ")
 
+SITE_ID = 1
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -21,30 +25,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
+    'dj_rest_auth',
+    'drf_yasg',
+
     'table.apps.TableConfig',
     'users.apps.UsersConfig',
-    'dj_rest_auth',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'dj_rest_auth.registration',
 ]
-
-SITE_ID = 1
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (),
 }
 
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = 'jwt-auth'
 AUTH_USER_MODEL = 'users.User'
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'users.serializers.UserSerializer',
+    'LOGIN_SERIALIZER': 'users.serializers.CustomLoginSerializer'
+}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=60),
