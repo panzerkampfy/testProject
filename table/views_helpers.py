@@ -4,7 +4,7 @@ import os
 
 import requests
 
-from table.models import User
+from table.models import User, PermissionOnBoard, Task, Column
 
 
 def get_fact_today() -> str:
@@ -26,3 +26,18 @@ def get_weather_today(user_id) -> float:
     temp = float(response.get('main').get('temp'))
     temp = temp - 273.15
     return temp
+
+
+def task_obj_permission(id, pk) -> PermissionOnBoard:
+    column_id = Task.objects.get(id=pk).column.id
+    return column_obj_permission(id, column_id)
+
+
+def column_obj_permission(id, pk) -> PermissionOnBoard:
+    board_id = Column.objects.get(id=pk).board.id
+    return board_obj_permission(id, board_id)
+
+
+def board_obj_permission(id, pk) -> PermissionOnBoard:
+    obj = PermissionOnBoard.objects.filter(user_id=id, board_id=pk, permission=1).first()
+    return obj

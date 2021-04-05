@@ -9,6 +9,7 @@ from table.selializers import TaskSerializer, TaskListSerializer, BoardSerialize
     ColumnSerializer, ColumnListSerializer
 from .views_helpers import get_fact_today as fact
 from .views_helpers import get_weather_today as weather
+from .views_helpers import task_obj_permission, column_obj_permission, board_obj_permission
 
 
 class BaseViewSet(viewsets.ModelViewSet):
@@ -21,23 +22,19 @@ class BaseViewSet(viewsets.ModelViewSet):
 
     permission_map: dict = None
 
-
-class PermissionViewSet(BaseViewSet):
-    queryset = PermissionOnBoard.objects.all()
-    serializer_map = {
-        'permission_update': PermissionSerializer
-    }
-    permission_map = {
-        'permission_update': (base_permissions.IsAuthenticated,
-                              (table_permissions.IsOwner |
-                               table_permissions.IsAdmin)
-                              ),
-    }
-
+    # permission_classes = [base_permissions.IsAuthenticated]
     def get_permissions(self):
         if not self.permission_map:
             raise NotImplementedError('permission_map must be implement')
         return [permission() for permission in self.permission_map[self.action]]
+
+
+class PermissionViewSet(viewsets.ModelViewSet):
+    queryset = PermissionOnBoard.objects.all()
+    serializer_class = PermissionSerializer
+    permission_classes = [base_permissions.IsAuthenticated,
+                          (table_permissions.IsOwner |
+                           table_permissions.IsAdmin)]
 
     @action(detail=False, methods=['PUT', 'PATCH'])
     def permission_update(self, request):
@@ -54,21 +51,6 @@ class PermissionViewSet(BaseViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-
-
-def task_obj_permission(id, pk) -> PermissionOnBoard:
-    column_id = Task.objects.get(id=pk).column.id
-    return column_obj_permission(id, column_id)
-
-
-def column_obj_permission(id, pk) -> PermissionOnBoard:
-    board_id = Column.objects.get(id=pk).board.id
-    return board_obj_permission(id, board_id)
-
-
-def board_obj_permission(id, pk) -> PermissionOnBoard:
-    obj = PermissionOnBoard.objects.filter(user_id=id, board_id=pk).first()
-    return obj
 
 
 class TaskViewSet(BaseViewSet):
@@ -256,6 +238,7 @@ class BoardViewSet(BaseViewSet):
                     )
     }
 
+    @action(detail=True, methods=['GET'])
     def list(self, request):
         boards = self.get_queryset().filter(users=request.user)
         serializer = self.get_serializer(boards, many=True)
