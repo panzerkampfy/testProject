@@ -1,4 +1,10 @@
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.vk.views import VKOAuth2Adapter
 from dj_rest_auth.app_settings import create_token
+from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.serializers import TokenSerializer, JWTSerializerWithExpiration, JWTSerializer
 from dj_rest_auth.utils import jwt_encode
 from dj_rest_auth.views import LoginView as login
@@ -39,3 +45,38 @@ class RegistrationViewSet(viewsets.ModelViewSet):
                                       self.serializer)
         data = login.get_response(self).data
         return Response(data=data, status=status.HTTP_201_CREATED)
+
+    # def verify(self, request):
+    #     try:
+    #         user = User.objects.get(is_verified=False)
+    #     except User.DoesNotExist:
+    #         return Response(status=status.HTTP_401_UNAUTHORIZED)
+    #
+    #     user.is_verified = True
+    #     user.save()
+    #
+    #     return Response(status=status.HTTP_200_OK)
+
+
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = "http://127.0.0.1:8000/"
+
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = "http://127.0.0.1:8000/"
+
+
+class VkLogin(SocialLoginView):
+    adapter_class = VKOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = "http://127.0.0.1:8000/"
+
+
+class GitHubLogin(SocialLoginView):
+    adapter_class = GitHubOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = "http://127.0.0.1:8000/"
