@@ -8,7 +8,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="trello2",
         default_version='v1',
-        description="Test description",
+        description="Project Management System",
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),

@@ -144,7 +144,7 @@ class ColumnViewSet(BaseViewSet):
     queryset = Column.objects.all()
     serializer_map = {
         'column_list': ColumnListSerializer,
-        'column_create': ColumnSerializer,
+        'create': ColumnSerializer,
         'update': ColumnSerializer
     }
 
@@ -155,7 +155,7 @@ class ColumnViewSet(BaseViewSet):
                          table_permissions.IsOwner |
                          table_permissions.IsAdmin)
                         ),
-        'column_create': (base_permissions.IsAuthenticated,
+        'create': (base_permissions.IsAuthenticated,
                           (table_permissions.IsMember |
                            table_permissions.IsOwner |
                            table_permissions.IsAdmin)
@@ -178,7 +178,7 @@ class ColumnViewSet(BaseViewSet):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['POST'])
-    def column_create(self, request):
+    def create(self, request):
         try:
             board_id = request.data.get('board')
             board = Board.objects.get(id=board_id)
@@ -216,7 +216,7 @@ class BoardViewSet(BaseViewSet):
     queryset = Board.objects.all()
     serializer_map = {
         'list': BoardSerializer,
-        'create_board': BoardSerializer,
+        'create': BoardSerializer,
         'update': BoardSerializer
     }
 
@@ -231,7 +231,7 @@ class BoardViewSet(BaseViewSet):
                    (table_permissions.IsOwner |
                     table_permissions.IsAdmin)
                    ),
-        'create_board': (base_permissions.IsAuthenticated,),
+        'create': (base_permissions.IsAuthenticated,),
         'destroy': (base_permissions.IsAuthenticated,
                     (table_permissions.IsOwner |
                      table_permissions.IsAdmin)
@@ -245,7 +245,7 @@ class BoardViewSet(BaseViewSet):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['POST'])
-    def create_board(self, request):
+    def create(self, request):
         data = request.data
         board_serializer = self.get_serializer(data=data)
         board_serializer.is_valid(raise_exception=True)
