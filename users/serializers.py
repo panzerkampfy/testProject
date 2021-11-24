@@ -12,6 +12,7 @@ class RegisterSerializer(serializers.Serializer):
         model = User
         fields = ['username', 'email', 'password', 'city', 'first_name', 'last_name', 'date_joined']
         read_only_fields = ('date_joined',)
+        extra_kwargs = {'password': {'write_only': True}}
 
     username = serializers.CharField(
         max_length=150,

@@ -46,16 +46,16 @@ class RegistrationViewSet(viewsets.ModelViewSet):
         data = login.get_response(self).data
         return Response(data=data, status=status.HTTP_201_CREATED)
 
-    # def verify(self, request):
-    #     try:
-    #         user = User.objects.get(is_verified=False)
-    #     except User.DoesNotExist:
-    #         return Response(status=status.HTTP_401_UNAUTHORIZED)
-    #
-    #     user.is_verified = True
-    #     user.save()
-    #
-    #     return Response(status=status.HTTP_200_OK)
+    def verify(self, request):
+        try:
+            user = User.objects.get(is_verified=False)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        user.is_verified = True
+        user.save()
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class FacebookLogin(SocialLoginView):

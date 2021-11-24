@@ -15,6 +15,7 @@ class TestRegistration:
         assert response.status_code == 201
 
     def test_login(self):
+        self.api_client.force_authenticate(self.user)
         data = {
             "username": "username1",
             "password": "password1"
