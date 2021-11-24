@@ -39,11 +39,11 @@ class TestColumnView(BaseTestClass):
     def test_create_column(self, board):
         board_id = str(board.id)
         new_column_data = {"board": board_id, "title_column": "column 1"}
-        response = self.api_client.post('/api/v1/column/', data=new_column_data, format='json')
+        response = self.api_client.post('/api/v1/columns/', data=new_column_data, format='json')
         assert response.status_code == 201
 
         new_column_data_not_valid = {"board": "", "title_column": "column 1"}
-        response = self.api_client.post('/api/v1/column/', data=new_column_data_not_valid, format='json')
+        response = self.api_client.post('/api/v1/columns/', data=new_column_data_not_valid, format='json')
         assert response.status_code == 400
 
     def test_update_column(self, column, update_column_data, update_column_data_not_valid):
@@ -66,11 +66,11 @@ class TestTaskView(BaseTestClass):
     def test_create_task(self, column):
         column_id = str(column.id)
         new_task_data = {"column": column_id, "text": "sdffsdff3"}
-        response = self.api_client.post('/api/v1/task/', data=new_task_data, format='json')
+        response = self.api_client.post('/api/v1/tasks/', data=new_task_data, format='json')
         assert response.status_code == 201
 
         new_task_data = {"column": "", "text": "sdffsdff3"}
-        response = self.api_client.post('/api/v1/task/', data=new_task_data, format='json')
+        response = self.api_client.post('/api/v1/tasks/', data=new_task_data, format='json')
         assert response.status_code == 400
 
     def test_update_task(self, task, update_task_data, update_task_data_not_valid):
